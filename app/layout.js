@@ -17,8 +17,9 @@ const geistMono = localFont({
 });
 
 export const metadata = {
-  title: 'NextJS React-Three-Fiber Starter',
-  description: "Template for playing with R3F in Next",
+  title: 'GPGU Smooth Particles',
+  description: "Smooth particle animation with GPGPU and Poisson sampling"
+    + " with R3F in Next",
 };
 
 export default function RootLayout({ children }) {
