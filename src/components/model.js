@@ -14,8 +14,8 @@ const View = dynamic(() => import('src/components/view')
 
 export function Model(props) {
     const meshRef = useRef();
-    const rows = 512;
-    const columns = 512;
+    const rows = 32;
+    const columns = 32;
     const halfColumns = Math.floor(columns / 2);
     const halfRows = Math.floor(rows / 2);
     
@@ -24,10 +24,11 @@ export function Model(props) {
         const coordinates = [];
         for (let x = 0; x < columns; x++ ) {
             // center x
-            const posX = x - halfColumns;
+            // const posX = x - halfColumns;
             for ( let y = 0; y < rows; y++ ) {
                 // center y
-                positions.push(posX * 2, (y - halfRows) * 2, 0);
+                // positions.push(posX * 2, (y - halfRows) * 2, 0);
+                positions.push(5 * Math.random() - 0.5, 5 * Math.random() - 0.5, 0);
                 coordinates.push(x/columns,y/rows);
             }
         }
@@ -36,7 +37,7 @@ export function Model(props) {
             new Float32Array(positions),
             new Float32Array(coordinates)
         ];
-    }, [halfColumns, halfRows])
+    }, [])
 
 
     return (
@@ -50,7 +51,7 @@ export function Model(props) {
                   makeDefault
                   near={0.1}
                   far={3000}
-                  position={[0, 0, 1000]} />
+                  position={[0, 0, 5]} />
                   {/* <ambientLight intensity={0.5} />
                   <directionalLight intensity={0.5} position={[0.5, 0, 0.866]} /> {/* ~60º */}
             </Suspense>

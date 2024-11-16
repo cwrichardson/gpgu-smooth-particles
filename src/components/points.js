@@ -38,8 +38,8 @@ export const Points = forwardRef((props, ref) => {
         // shaderRef.current.uniforms.uTime.value = state.clock.elapsedTime;
 
         // executes 1/frame, so we can just directly morph the ref with a delta
-        ref.current.rotation.x += 0.01;
-        ref.current.rotation.y += 0.02;
+        // ref.current.rotation.x += 0.01;
+        // ref.current.rotation.y += 0.02;
     })
 
     return (

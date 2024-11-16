@@ -9,7 +9,7 @@ export const vertex = /* glsl */ `
 
         vec4 mvPosition = uProgress * modelViewMatrix * vec4( position, 1. );
         // start with big particles; give them some perspective
-        gl_PointSize = 200. * ( 1. / - mvPosition.z );
+        gl_PointSize = 25. * ( 1. / - mvPosition.z );
         gl_Position = projectionMatrix * mvPosition;
     }
 `;
