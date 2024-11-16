@@ -27,7 +27,7 @@ export default function RootLayout({ children }) {
     <html lang="en" suppressHydrationWarning>
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
         <ThemeProvider attribute='class'>
-          <Flex dir={'column'}>
+          <Flex dir={'column'} bgColor={'white'}>
             <Flex
               minH={'100vh'}
               w={'100vw'}
