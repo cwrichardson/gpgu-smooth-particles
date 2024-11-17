@@ -96,7 +96,7 @@ export function TargetWrapper({ targets, count, ...otherProps }) {
             {/* Calculate position texture in FBO */}
             {createPortal(
                 <mesh ref={posRef}>
-                    <FboPositionMaterial args={[ count, count ]} />
+                    <FboPositionMaterial sizeX={count} sizeY={count} />
                     <bufferGeometry>
                         <bufferAttribute
                             attach={'attributes-position'}
@@ -117,7 +117,7 @@ export function TargetWrapper({ targets, count, ...otherProps }) {
             {/* Calculate velocity texture in FBO */}
             {createPortal(
                 <mesh ref={velRef}>
-                    <FboVelocityMaterial args={[ count, count ]} />
+                    <FboVelocityMaterial sizeX={count} sizeY={count} />
                     <bufferGeometry>
                         <bufferAttribute
                             attach={'attributes-position'}
