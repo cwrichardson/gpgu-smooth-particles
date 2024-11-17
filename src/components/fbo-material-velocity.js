@@ -27,12 +27,15 @@ export function FboVelocityMaterial({sizeX, sizeY, ...props}) {
         theArray[k + 3] = 1;
     }
 
+    const resolution = `vec2( ${sizeX.toFixed(1)}, ${sizeY.toFixed(1)})`;
+
     return (
         <velocityMaterial
             key={VelocityMaterial.key}
             dtVelocity={dtVelocity}
             time={0}
             depthTest={false}
+            args={[{ defines: { resolution: resolution } }]}
             {...props}
         />
     )
