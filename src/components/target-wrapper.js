@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useRef } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import { createPortal, useFrame } from '@react-three/fiber';
 import { OrthographicCamera, Scene } from 'three';
 
@@ -25,6 +25,11 @@ export function TargetWrapper({ targets, count, ...otherProps }) {
     const posRef = useRef();
     const velRef = useRef();
     const mainRef = useRef();
+
+    useEffect(() => {
+        console.log(posRef.current);
+        console.log(velRef.current);
+    }, [posRef, velRef])
 
     const fboCamera = useMemo(() => {
         const camera = new OrthographicCamera(-1, 1, 1, -1, 1, 0, 1);
@@ -59,13 +64,31 @@ export function TargetWrapper({ targets, count, ...otherProps }) {
         ];
     }, [length]);
 
-    useFrame((state) => {
-        // if (fboModelRef.current.camera) {
-        //     state.gl.setRenderTarget(target);
-        //     state.gl.render(FBOScene, fboModelRef.current.camera);
-        //     state.gl.setRenderTarget(null);
-        // }
-        // mainRef.current.mesh.material.uFBO = target.texture;
+    useFrame((state, delta, xrFrame) => {
+        posRef.current.material.time += delta;
+        velRef.current.material.time += delta;
+
+        // do the GPGPU position calculations
+        state.gl.setRenderTarget(targets.posTarget);
+        state.gl.render(PosScene, fboCamera);
+
+        // update velocity uniforms
+        velRef.current.material.dtPosition = targets.posTarget.texture;
+
+        // do the GPGPU velocity calculations
+        state.gl.setRenderTarget(targets.velTarget);
+        state.gl.render(VelScene, fboCamera);
+
+        // update main positions
+        mainRef.current.material.uPositions = targets.velTarget.texture;
+
+        // return rendering to the main target
+        state.gl.setRenderTarget(null);
+
+        // update position and velocity for next frame
+        posRef.current.material.dtPosition = targets.posTarget.texture;
+        posRef.current.material.dtVelocity = targets.velTarget.texture;
+        velRef.current.material.dtVelocity = targets.velTarget.texture;
     });
 
     return (
@@ -73,7 +96,7 @@ export function TargetWrapper({ targets, count, ...otherProps }) {
             {/* Calculate position texture in FBO */}
             {createPortal(
                 <mesh ref={posRef}>
-                    <FboPositionMaterial />
+                    <FboPositionMaterial args={[ count, count ]} />
                     <bufferGeometry>
                         <bufferAttribute
                             attach={'attributes-position'}
@@ -94,7 +117,7 @@ export function TargetWrapper({ targets, count, ...otherProps }) {
             {/* Calculate velocity texture in FBO */}
             {createPortal(
                 <mesh ref={velRef}>
-                    <FboVelocityMaterial />
+                    <FboVelocityMaterial args={[ count, count ]} />
                     <bufferGeometry>
                         <bufferAttribute
                             attach={'attributes-position'}

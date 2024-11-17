@@ -1,4 +1,5 @@
 export const fragmentShaderPosition = /* glsl */ `
+    uniform sampler2D dtVelocity;
     uniform float uTime;
 
     void main() {

@@ -1,4 +1,5 @@
 export const fragmentShaderVelocity = /* glsl */ `
+    uniform sampler2D dtVelocity;
     uniform float time;
 
     void main() {
