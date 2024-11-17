@@ -3,12 +3,12 @@
 import { forwardRef } from 'react';
 import { extend } from '@react-three/fiber';
 import { PerspectiveCamera, shaderMaterial } from '@react-three/drei';
-import { DoubleSide } from 'three';
 
 import { vertex } from '@/glsl/vertex';
 import { fragment } from '@/glsl/fragment';
 
 const CustomPointsMaterial = shaderMaterial({
+    uPositions: null,
     uProgress: 1,
     uTime: 0
 }, vertex, fragment);
@@ -27,7 +27,7 @@ export const Points = forwardRef((props, ref) => {
                     heightSegments={1}
                 >
                     <bufferAttribute attach={'attributes-position'} args={[vertices, 3]} />
-                    <bufferAttribute attach={'attributes-aCoords'} args={[positions, 2]} />
+                    <bufferAttribute attach={'attributes-reference'} args={[positions, 2]} />
                 </bufferGeometry>
                 <customPointsMaterial
                     key={CustomPointsMaterial.key}
