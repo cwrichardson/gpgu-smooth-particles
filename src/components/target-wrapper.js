@@ -7,6 +7,7 @@ import { OrthographicCamera, Scene } from 'three';
 import { Points } from './points';
 import { FboPositionMaterial } from './fbo-material-position';
 import { FboVelocityMaterial } from './fbo-material-velocity';
+import { Debug } from './debug-model';
 
 /**
  * Main component. Creates two portals (one for position and velocity),
@@ -51,44 +52,63 @@ export function TargetWrapper({ targets, count, ...otherProps }) {
         const reference = [];
         for (let i = 0; i < length ; i++ ) {
             positions.push(
-                5 * Math.random() - 0.5,
-                5 * Math.random() - 0.5,
+                5 * (Math.random() - 0.5),
+                5 * (Math.random() - 0.5),
                 0
             );
-            reference.push((i % length) / length, ~ ~ ( i / length ) / length);
+            /**
+             * As Yuri says in the video, they do this with some voodoo:
+             * reference.push((i % count) / count, ~ ~ ( i / count ) / count);
+             * 
+             * For an explanation of the voodoo, @see
+             * https://stackoverflow.com/questions/4055633/what-does-double-tilde-do-in-javascript
+             * 
+             * But it's replaced by Math.trunc() like a decade ago
+             * (ECMAScript 6).
+             */
+            reference.push((i % count) / count, Math.trunc( i / count ) / count);
         }
 
         return [
             new Float32Array(positions),
             new Float32Array(reference)
         ];
-    }, [length]);
+    }, [count, length]);
+
+    let currentTextureIndex = 0;
+    let nextTextureIndex;
 
     useFrame((state, delta, xrFrame) => {
+        nextTextureIndex = currentTextureIndex === 0 ? 1 : 0;
+
         posRef.current.material.time += delta;
         velRef.current.material.time += delta;
 
         // do the GPGPU position calculations
-        state.gl.setRenderTarget(targets.posTarget);
+        state.gl.setRenderTarget(targets.posTarget[currentTextureIndex]);
         state.gl.render(PosScene, fboCamera);
-
-        // update velocity uniforms
-        velRef.current.material.dtPosition = targets.posTarget.texture;
-
+                
         // do the GPGPU velocity calculations
-        state.gl.setRenderTarget(targets.velTarget);
+        state.gl.setRenderTarget(targets.velTarget[currentTextureIndex]);
         state.gl.render(VelScene, fboCamera);
-
-        // update main positions
-        mainRef.current.material.uPositions = targets.velTarget.texture;
-
+        
         // return rendering to the main target
         state.gl.setRenderTarget(null);
+        
+        // update main positions
+        mainRef.current.material.uPositions = targets.velTarget[currentTextureIndex].texture;
+        
+        // pass the positions
 
+        // velRef.current.material.dtPosition = targets.posTarget.texture;
+        
         // update position and velocity for next frame
-        posRef.current.material.dtPosition = targets.posTarget.texture;
-        posRef.current.material.dtVelocity = targets.velTarget.texture;
-        velRef.current.material.dtVelocity = targets.velTarget.texture;
+        posRef.current.material.dtPosition = targets.posTarget[currentTextureIndex].texture;
+        velRef.current.material.dtPosition = targets.posTarget[currentTextureIndex].texture;
+        posRef.current.material.dtVelocity = targets.velTarget[currentTextureIndex].texture;
+        velRef.current.material.dtVelocity = targets.velTarget[currentTextureIndex].texture;
+
+        currentTextureIndex = nextTextureIndex;
     });
 
     return (
@@ -142,6 +162,9 @@ export function TargetWrapper({ targets, count, ...otherProps }) {
                 positions={reference}
                 {...otherProps}
             />
+            <Debug fboTarget={targets.posTarget[Math.ceil(currentTextureIndex / 2)]} x={-1.5} />
+            <Debug fboTarget={targets.velTarget[Math.ceil(currentTextureIndex / 2)]} x={1.5} />
+
         </>
     )
 }
