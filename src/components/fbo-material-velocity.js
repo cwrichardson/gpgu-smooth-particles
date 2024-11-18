@@ -1,6 +1,5 @@
 import { shaderMaterial } from '@react-three/drei';
 import { extend } from '@react-three/fiber';
-import { Vector4 } from 'three';
 
 import { fboPassthroughVertex } from '@/glsl/fboPassthroughVertex';
 import { fragmentShaderVelocity } from '@/glsl/fragmentShaderVelocity';
@@ -21,8 +20,8 @@ export function FboVelocityMaterial({sizeX, sizeY, ...props}) {
     const theArray = dtVelocity.image.data;
     
     for (let k = 0, kl = theArray.length; k < kl; k += 4) {
-        theArray[k + 0] = (Math.random() - 0.5);
-        theArray[k + 1] = (Math.random() - 0.5);
+        theArray[k + 0] = 0.01 * (Math.random() - 0.5);
+        theArray[k + 1] = 0.01 * (Math.random() - 0.5);
         theArray[k + 2] = 0;
         theArray[k + 3] = 1;
     }
