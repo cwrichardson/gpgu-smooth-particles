@@ -96,7 +96,7 @@ export function TargetWrapper({ targets, count, ...otherProps }) {
         state.gl.setRenderTarget(null);
         
         // update main positions
-        mainRef.current.material.uPositions = targets.velTarget[currentTextureIndex].texture;
+        mainRef.current.material.uPositions = targets.posTarget[currentTextureIndex].texture;
         
         // pass the positions
 
