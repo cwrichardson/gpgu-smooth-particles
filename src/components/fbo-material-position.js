@@ -7,7 +7,7 @@ import { createDataTexture } from '@/utils/create-data-texture';
 
 const PositionMaterial = shaderMaterial({
     dtPosition: null,
-    dtVelociy: null,
+    dtVelocity: null,
     time: 0
 }, fboPassthroughVertex, fragmentShaderPosition);
 extend({ PositionMaterial });
