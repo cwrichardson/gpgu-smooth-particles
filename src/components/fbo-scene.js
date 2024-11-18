@@ -1,7 +1,7 @@
 'use client';
 
 import { useFBO } from '@react-three/drei';
-import { NearestFilter, RepeatWrapping, RGBAFormat } from 'three';
+import { FloatType, NearestFilter, RepeatWrapping, RGBAFormat } from 'three';
 
 import { TargetWrapper } from '@/components/target-wrapper';
 
@@ -16,18 +16,41 @@ import { TargetWrapper } from '@/components/target-wrapper';
 export function FboScene(props) {
     const { count = 32, ...restProps } = props;
 
-    const posTarget = useFBO(count, count, {
+    const posTarget = [];
+    const velTarget = [];
+
+    posTarget[0] = useFBO(count, count, {
         minFilter: NearestFilter,
         magFilter: NearestFilter,
         format: RGBAFormat,
+        type: FloatType,
         wrapS: RepeatWrapping,
         wrapT: RepeatWrapping
     });
 
-    const velTarget = useFBO(count, count, {
+    posTarget[1] = useFBO(count, count, {
         minFilter: NearestFilter,
         magFilter: NearestFilter,
         format: RGBAFormat,
+        type: FloatType,
+        wrapS: RepeatWrapping,
+        wrapT: RepeatWrapping
+    });
+
+    velTarget[0] = useFBO(count, count, {
+        minFilter: NearestFilter,
+        magFilter: NearestFilter,
+        format: RGBAFormat,
+        type: FloatType,
+        wrapS: RepeatWrapping,
+        wrapT: RepeatWrapping
+    });
+
+    velTarget[1] = useFBO(count, count, {
+        minFilter: NearestFilter,
+        magFilter: NearestFilter,
+        format: RGBAFormat,
+        type: FloatType,
         wrapS: RepeatWrapping,
         wrapT: RepeatWrapping
     });
