@@ -17,6 +17,6 @@ export function fillPositionTextureFromPoints(dataTexture, points) {
         theArray[k + 0] = 2 * (points[pointIdx][0] - 0.5);
         theArray[k + 1] = 2 * (points[pointIdx][1] - 0.5);
         theArray[k + 2] = 0;
-        theArray[k + 3] = 1;
+        theArray[k + 3] = points[pointIdx][2];
     }
 }

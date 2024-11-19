@@ -2,11 +2,14 @@ export const vertex = /* glsl */ `
     uniform sampler2D uPositions;
     uniform float uTime;
     attribute vec2 reference;
+    varying float vShade;
     varying vec2 vUv;
 
     void main() {
         vUv = uv;
         vec3 pos = texture2D(uPositions, reference).xyz;
+
+        vShade = texture2D(uPositions, reference).w;
 
         // vec4 mvPosition = modelViewMatrix * vec4( position, 1. );
         // vec4 mvPosition = modelViewMatrix * vec4( reference, 1., 1. );

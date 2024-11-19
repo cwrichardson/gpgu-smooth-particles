@@ -1,4 +1,5 @@
 export const fragment = /* glsl */ `
+    varying float vShade;
     varying vec2 vUv;
 
     void main() {
@@ -13,6 +14,9 @@ export const fragment = /* glsl */ `
         // add a few alphas together to make a combined gradient for the point
         float finalAlpha = alpha * 0.05 + smoothstep(0., 1., alpha) * 0.1
             + smoothstep(0.9 - fwidth(alpha), 0.9, alpha) * 0.5;
-        gl_FragColor = vec4(color, finalAlpha);
+
+        float opac = 1. - (0.3 + 0.7 * vShade);
+
+        gl_FragColor = vec4(color, finalAlpha * opac);
     }
 `;
