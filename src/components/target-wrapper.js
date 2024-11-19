@@ -108,10 +108,17 @@ export function TargetWrapper({ targets, count, ...otherProps }) {
         return t;
     }, [count, points]);
 
-    // let modulo = 0;
-    // const handleClick = () => {
-
-    // }
+    let modulo = 0;
+    const handleClick = (e) => {
+        e.stopPropagation();
+        if (modulo === 0) {
+            velRef.current.material.uTarget = target2;
+            modulo = 1;
+        } else {
+            velRef.current.material.uTarget = target1;
+            modulo = 0;
+        }
+    }
 
     let currentTextureIndex = 0;
     let nextTextureIndex;
@@ -208,6 +215,7 @@ export function TargetWrapper({ targets, count, ...otherProps }) {
                 ref={mainRef}
                 vertices={positions}
                 positions={reference}
+                onClick={(e) => handleClick(e)}
                 {...otherProps}
             />
             <Debug fboTarget={targets.posTarget[Math.ceil(currentTextureIndex / 2)]} x={-1.5} />
