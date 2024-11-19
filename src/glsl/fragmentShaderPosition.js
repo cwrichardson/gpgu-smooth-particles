@@ -20,7 +20,7 @@ export const fragmentShaderPosition = CNOISE + HASH43 + /* glsl */ `
 
         vec4 rands = hash43(vec3(uv * 10., 0.));
 
-        position.xyz += curl(vec3(position.xy, rands.x), uTime, 0.1) * 0.001 * smoothstep(0.3, 0.9, rands.z);
+        position.xyz += curl(vec3(position.xy, rands.x), uTime * mix(0.3, 0.7, rands.y), 0.1) * 0.001 * smoothstep(0.3, 0.9, rands.z);
 
         gl_FragColor = vec4(position.xyz, position.w);
 
