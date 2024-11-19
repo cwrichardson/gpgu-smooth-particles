@@ -4,9 +4,14 @@ import { extend } from '@react-three/fiber';
 import { fboPassthroughVertex } from '@/glsl/fboPassthroughVertex';
 import { fragmentShaderPosition } from '@/glsl/fragmentShaderPosition';
 import { createDataTexture } from '@/utils/create-data-texture';
+import {
+    fillPositionTexture,
+    fillPositionTextureFromPoints
+} from '@/utils/fill-position-texture';
 
 const PositionMaterial = shaderMaterial({
     dtPosition: null,
+    dtPosition1: null,
     dtVelocity: null,
     time: 0
 }, fboPassthroughVertex, fragmentShaderPosition);
@@ -15,16 +20,26 @@ extend({ PositionMaterial });
 /**
  * Extend shader material with custom uniforms
  */
-export function FboPositionMaterial({sizeX, sizeY, ...props}) {
+export function FboPositionMaterial(props) {
+    const {sizeX, sizeY, points, points2, ...rest} = props;
     const dtPosition = createDataTexture(sizeX, sizeY);
-    const theArray = dtPosition.image.data;
+    const dtPosition1 = createDataTexture(sizeX, sizeY);
+    const target2 = createDataTexture(sizeX, sizeY);
 
-    for (let k = 0, kl = theArray.length; k < kl; k += 4) {
-        theArray[k + 0] = 2 * (Math.random() - 0.5);
-        theArray[k + 1] = 2 * (Math.random() - 0.5);
-        theArray[k + 2] = 0;
-        theArray[k + 3] = 1;
+    if (! Array.isArray(points) || points.length === 0) {
+        fillPositionTexture(dtPosition);
+    } else {
+        fillPositionTextureFromPoints(dtPosition, points);
     }
+
+    if (! Array.isArray(points2) || points2.length === 0) {
+        fillPositionTexture(dtPosition1);
+        fillPositionTexture(target2);
+    } else {
+        fillPositionTextureFromPoints(dtPosition, points2);
+        fillPositionTextureFromPoints(target2, points2);
+    }
+
 
     const resolution = `vec2( ${sizeX.toFixed(1)}, ${sizeY.toFixed(1)})`;
 
@@ -35,7 +50,7 @@ export function FboPositionMaterial({sizeX, sizeY, ...props}) {
             time={0}
             depthTest={false}
             args={[{ defines: { resolution: resolution } }]}
-            {...props}
+            {...rest}
         />
     )
 }

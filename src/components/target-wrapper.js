@@ -1,6 +1,6 @@
 'use client';
 
-import { useContext, useEffect, useMemo, useRef } from 'react';
+import { useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { createPortal, useFrame } from '@react-three/fiber';
 import { OrthographicCamera, Scene } from 'three';
 
@@ -73,11 +73,18 @@ export function TargetWrapper({ targets, count, ...otherProps }) {
     }, [count, length]);
 
     const { scratchPads } = useContext(ScratchpadContext);
+    const [ points, setPoints ] = useState([]);
+    const [ points2, setPoints2 ] = useState([]);
 
     useEffect(() => {
         if (scratchPads['circle']) {
             const points = getPointsFromData(scratchPads['circle'].data);
-            console.log(points);
+            setPoints(points);
+        }
+
+        if (scratchPads['yinyang']) {
+            const points2 = getPointsFromData(scratchPads['yinyang'].data);
+            setPoints2(points2);
         }
     }, [scratchPads]);
 
@@ -122,7 +129,12 @@ export function TargetWrapper({ targets, count, ...otherProps }) {
             {/* Calculate position texture in FBO */}
             {createPortal(
                 <mesh ref={posRef}>
-                    <FboPositionMaterial sizeX={count} sizeY={count} />
+                    <FboPositionMaterial
+                        sizeX={count}
+                        sizeY={count}
+                        points={points}
+                        points2={points2}
+                    />
                     <bufferGeometry>
                         <bufferAttribute
                             attach={'attributes-position'}
@@ -143,7 +155,11 @@ export function TargetWrapper({ targets, count, ...otherProps }) {
             {/* Calculate velocity texture in FBO */}
             {createPortal(
                 <mesh ref={velRef}>
-                    <FboVelocityMaterial sizeX={count} sizeY={count} />
+                    <FboVelocityMaterial
+                        sizeX={count}
+                        sizeY={count}
+                        points={points}
+                    />
                     <bufferGeometry>
                         <bufferAttribute
                             attach={'attributes-position'}

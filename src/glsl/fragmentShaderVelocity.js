@@ -2,6 +2,7 @@ export const fragmentShaderVelocity = /* glsl */ `
     uniform sampler2D dtPosition;
     uniform sampler2D dtVelocity;
     uniform float time;
+    uniform sampler2D uTarget;
 
     void main() {
         vec2 uv = gl_FragCoord.xy / resolution.xy;
