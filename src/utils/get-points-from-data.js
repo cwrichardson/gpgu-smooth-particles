@@ -5,11 +5,11 @@ export function getPointsFromData(imageData) {
         // shape: [imageData.width, imageData.height],
         shape: [1,1],
         // minDistance: 1.1,
-        minDistance: 4 / 400,
+        minDistance: 2 / 400,
         // maxDistance: 55,
         maxDistance: 10 / 400,
-        // tries: 15,
-        tries: 4,
+        tries: 20,
+        // tries: 4,
         distanceFunction: function (point) {
             // points are all from 0–1, so we multiply to get back to index
             // values for the original image data
@@ -29,7 +29,7 @@ export function getPointsFromData(imageData) {
     let points = pds.fill();
 
     // probably just chopping off the end isn't right, but ...
-    points.sort((a,b) => (Math.random - 0.5))
+    points.sort((a,b) => (Math.random() - 0.5))
     points = points.slice(0, imageData.width * imageData.height);
 
     return points;
