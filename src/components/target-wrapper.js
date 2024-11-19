@@ -10,6 +10,8 @@ import { FboPositionMaterial } from './fbo-material-position';
 import { FboVelocityMaterial } from './fbo-material-velocity';
 import { Debug } from './debug-model';
 import { getPointsFromData } from '@/utils/get-points-from-data';
+import { createDataTexture } from '@/utils/create-data-texture';
+import { fillPositionTextureFromPoints } from '@/utils/fill-position-texture';
 
 /**
  * Main component. Creates two portals (one for position and velocity),
@@ -88,6 +90,29 @@ export function TargetWrapper({ targets, count, ...otherProps }) {
         }
     }, [scratchpads]);
 
+    const target1 = useMemo(() => {
+        if (points.length === 0) return null;
+
+        const t = createDataTexture(count, count);
+        fillPositionTextureFromPoints(t, points);
+
+        return t;
+    }, [count, points]);
+
+    const target2 = useMemo(() => {
+        if (points.length === 0) return null;
+
+        const t = createDataTexture(count, count);
+        fillPositionTextureFromPoints(t, points2);
+
+        return t;
+    }, [count, points]);
+
+    // let modulo = 0;
+    // const handleClick = () => {
+
+    // }
+
     let currentTextureIndex = 0;
     let nextTextureIndex;
 
@@ -159,6 +184,7 @@ export function TargetWrapper({ targets, count, ...otherProps }) {
                         sizeX={count}
                         sizeY={count}
                         points={points}
+                        uTarget={target1}
                     />
                     <bufferGeometry>
                         <bufferAttribute
