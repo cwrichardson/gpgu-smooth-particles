@@ -1,6 +1,6 @@
 'use client';
 
-import { forwardRef } from 'react';
+import { forwardRef, useEffect } from 'react';
 import { extend } from '@react-three/fiber';
 import { PerspectiveCamera, shaderMaterial } from '@react-three/drei';
 
@@ -15,11 +15,11 @@ const CustomPointsMaterial = shaderMaterial({
 extend({ CustomPointsMaterial });
 
 export const Points = forwardRef((props, ref) => {
-    const { vertices, positions } = props;
+    const { vertices, positions, ...rest } = props;
 
     return (
         <>
-            <points ref={ref}>
+            <points ref={ref} {...rest}>
                 <bufferGeometry
                     width={1}
                     height={1}
