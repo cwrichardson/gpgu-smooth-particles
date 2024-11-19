@@ -1,4 +1,7 @@
-export const fragmentShaderPosition = /* glsl */ `
+import { CNOISE } from '@/glsl/noise';
+import { HASH43 } from '@/glsl/hash43';
+
+export const fragmentShaderPosition = CNOISE + HASH43 + /* glsl */ `
     uniform sampler2D dtPosition;
     uniform sampler2D dtPosition1;
     uniform sampler2D dtVelocity;
@@ -11,6 +14,12 @@ export const fragmentShaderPosition = /* glsl */ `
         // vec3 position = tmpPos.xyz;
         vec3 position = texture2D(dtPosition, uv).xyz;
         vec3 velocity = texture2D(dtVelocity, uv).xyz;
+
+        position.xyz += velocity.xyz * 1./60.;
+
+        vec4 rands = hash43(vec3(uv * 5., 0.));
+
+        position.xyz += curl(vec3(position.xy, rands.x), 0., 0.) * 0.001;
 
         gl_FragColor = vec4(position + velocity * 0., 1.);
 
