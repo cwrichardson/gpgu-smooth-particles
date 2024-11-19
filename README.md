@@ -23,6 +23,9 @@ To manage this same thing in Next, we need to add a component outside of the
 R3F View. Then as images are loaded, we update state with `useContext` and
 `useReducer`.
 
+# TODO
+The poisson sampling ... isn't great. Need to look into "weighted voronoi stippling".
+
 # References
 [Yuri's original Youtube][1]
 [Original](https://ddd.live/)
