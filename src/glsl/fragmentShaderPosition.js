@@ -12,7 +12,7 @@ export const fragmentShaderPosition = /* glsl */ `
         vec3 position = texture2D(dtPosition, uv).xyz;
         vec3 velocity = texture2D(dtVelocity, uv).xyz;
 
-        gl_FragColor = vec4(position + velocity, 1.);
+        gl_FragColor = vec4(position + velocity * 0., 1.);
 
         // gl_FragColor = vec4(color, 1.);
     }
