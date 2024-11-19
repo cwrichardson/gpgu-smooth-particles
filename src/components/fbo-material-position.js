@@ -36,7 +36,7 @@ export function FboPositionMaterial(props) {
         fillPositionTexture(dtPosition1);
         fillPositionTexture(target2);
     } else {
-        fillPositionTextureFromPoints(dtPosition, points2);
+        fillPositionTextureFromPoints(dtPosition1, points2);
         fillPositionTextureFromPoints(target2, points2);
     }
 
@@ -47,6 +47,7 @@ export function FboPositionMaterial(props) {
         <positionMaterial
             key={PositionMaterial.key}
             dtPosition={dtPosition}
+            dtPosition1={dtPosition1}
             time={0}
             depthTest={false}
             args={[{ defines: { resolution: resolution } }]}
