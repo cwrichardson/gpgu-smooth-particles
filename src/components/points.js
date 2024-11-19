@@ -32,6 +32,7 @@ export const Points = forwardRef((props, ref) => {
                 <customPointsMaterial
                     key={CustomPointsMaterial.key}
                     depthTest={false}
+                    depthWrite={false}
                     transparent
                 />
             </points>
