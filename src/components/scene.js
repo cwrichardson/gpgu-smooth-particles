@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 import { Canvas } from '@react-three/fiber';
 import { Preload } from '@react-three/drei';
@@ -7,6 +8,8 @@ import { Preload } from '@react-three/drei';
 import { css } from 'styled-system/css';
 import { splitCssProps } from 'styled-system/jsx';
 import { r3f } from '@/utils/r3f';
+import { ScratchpadContext } from '@/utils/scratch-pad-context';
+import { ScratchPad } from '@/components/scratch-pad';
 
 const fallbackRenderer = ({ error }) => {
     console.error('Error rendering animation canvas', error.message);
@@ -45,16 +48,24 @@ export function Scene(props) {
         ...canvasProps?.style
     };
 
+    const [ scratchPads, setScratchPads ] = useState({
+        width: 32,
+        height: 32
+    })
+
     return (
-        <ErrorBoundary fallbackRender={fallbackRenderer}>
-            <Canvas
-              className={classes}
-              style={styleReset}
-              {...canvasProps}
-              >
-                <r3f.Out />
-                <Preload all />
-              </Canvas>
-        </ErrorBoundary>
+        <ScratchpadContext.Provider value={{ scratchPads, setScratchPads }}>
+            <ErrorBoundary fallbackRender={fallbackRenderer}>
+                <Canvas
+                    className={classes}
+                    style={styleReset}
+                    {...canvasProps}
+                >
+                    <r3f.Out />
+                    <Preload all />
+                </Canvas>
+            </ErrorBoundary>
+            <ScratchPad imageUrl={'/circle.png'} name={'circle'} width={32} height={32} />
+        </ScratchpadContext.Provider>
     )
 }
