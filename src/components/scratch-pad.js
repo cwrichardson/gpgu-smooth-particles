@@ -1,15 +1,15 @@
 'use client';
 
-import { useContext, useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 
-import { ScratchpadContext } from '@/utils/scratch-pad-context';
+import { useScratchpadsDispatch } from '@/utils/scratch-pad-context';
 import Image from 'next/image';
 
-export function ScratchPad({imageUrl, width = 32, height = 32, name}) {
+export function Scratchpad({imageUrl, width = 32, height = 32, name}) {
     const canvasRef = useRef();
     const imageRef = useRef();
 
-    const { scratchPads, setScratchPads } = useContext(ScratchpadContext);
+    const dispatch = useScratchpadsDispatch();
 
     useEffect(() => {
         const canvas = canvasRef.current;
@@ -28,9 +28,12 @@ export function ScratchPad({imageUrl, width = 32, height = 32, name}) {
 
         const data = ctx.getImageData(0, 0, width, height);
 
-        setScratchPads({
-            ...scratchPads,
-            [name]: { data }
+        dispatch({
+            type: 'add',
+            name,
+            data,
+            width,
+            height
         });
     }, [canvasRef, imageRef])
 

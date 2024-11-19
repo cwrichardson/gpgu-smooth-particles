@@ -1,10 +1,10 @@
 'use client';
 
-import { useContext, useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { createPortal, useFrame } from '@react-three/fiber';
 import { OrthographicCamera, Scene } from 'three';
 
-import { ScratchpadContext } from '@/utils/scratch-pad-context';
+import { useScratchpads } from '@/utils/scratch-pad-context';
 import { Points } from './points';
 import { FboPositionMaterial } from './fbo-material-position';
 import { FboVelocityMaterial } from './fbo-material-velocity';
@@ -72,21 +72,21 @@ export function TargetWrapper({ targets, count, ...otherProps }) {
         ];
     }, [count, length]);
 
-    const { scratchPads } = useContext(ScratchpadContext);
+    const scratchpads = useScratchpads();
     const [ points, setPoints ] = useState([]);
     const [ points2, setPoints2 ] = useState([]);
 
     useEffect(() => {
-        if (scratchPads['circle']) {
-            const points = getPointsFromData(scratchPads['circle'].data);
+        if (scratchpads['circle']) {
+            const points = getPointsFromData(scratchpads['circle'].data);
             setPoints(points);
         }
 
-        if (scratchPads['yinyang']) {
-            const points2 = getPointsFromData(scratchPads['yinyang'].data);
+        if (scratchpads['yinyang']) {
+            const points2 = getPointsFromData(scratchpads['yinyang'].data);
             setPoints2(points2);
         }
-    }, [scratchPads]);
+    }, [scratchpads]);
 
     let currentTextureIndex = 0;
     let nextTextureIndex;

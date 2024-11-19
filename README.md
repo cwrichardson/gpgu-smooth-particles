@@ -14,6 +14,15 @@ writing to a single shader is generally undefined behavior in Open/WebGL".
 We do this explicitly for the two variables (`position` and `velocity`), but
 it could probably be farily-easily genercised.
 
+# 2D canvas in the dom
+Yuri adds a regular canvas to the dom and renders his images into it in order
+to get the data for the points, which can then be manipulated on the javascript
+side, before feeding it back in as a texture.
+
+To manage this same thing in Next, we need to add a component outside of the
+R3F View. Then as images are loaded, we update state with `useContext` and
+`useReducer`.
+
 # References
 [Yuri's original Youtube][1]
 [Original](https://ddd.live/)
