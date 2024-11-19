@@ -1,13 +1,15 @@
 'use client';
 
-import { useEffect, useMemo, useRef } from 'react';
+import { useContext, useEffect, useMemo, useRef } from 'react';
 import { createPortal, useFrame } from '@react-three/fiber';
 import { OrthographicCamera, Scene } from 'three';
 
+import { ScratchpadContext } from '@/utils/scratch-pad-context';
 import { Points } from './points';
 import { FboPositionMaterial } from './fbo-material-position';
 import { FboVelocityMaterial } from './fbo-material-velocity';
 import { Debug } from './debug-model';
+import { getPointsFromData } from '@/utils/get-points-from-data';
 
 /**
  * Main component. Creates two portals (one for position and velocity),
@@ -26,11 +28,6 @@ export function TargetWrapper({ targets, count, ...otherProps }) {
     const posRef = useRef();
     const velRef = useRef();
     const mainRef = useRef();
-
-    useEffect(() => {
-        console.log(posRef.current);
-        console.log(velRef.current);
-    }, [posRef, velRef])
 
     const fboCamera = useMemo(() => {
         const camera = new OrthographicCamera(-1, 1, 1, -1, 1, 0, 1);
@@ -74,6 +71,15 @@ export function TargetWrapper({ targets, count, ...otherProps }) {
             new Float32Array(reference)
         ];
     }, [count, length]);
+
+    const { scratchPads } = useContext(ScratchpadContext);
+
+    useEffect(() => {
+        if (scratchPads['circle']) {
+            const points = getPointsFromData(scratchPads['circle'].data);
+            console.log(points);
+        }
+    }, [scratchPads]);
 
     let currentTextureIndex = 0;
     let nextTextureIndex;
