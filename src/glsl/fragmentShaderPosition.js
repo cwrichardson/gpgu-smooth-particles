@@ -8,6 +8,7 @@ export const fragmentShaderPosition = CNOISE + HASH43 + /* glsl */ `
     uniform float time;
 
     void main() {
+        float uTime = time * 0.2;
         // vec3 color = vec3(0.);
         vec2 uv = gl_FragCoord.xy / resolution.xy;
         // vec4 tmpPos = texture2D(dtPosition, uv);
@@ -17,9 +18,9 @@ export const fragmentShaderPosition = CNOISE + HASH43 + /* glsl */ `
 
         position.xyz += velocity.xyz * 1./60.;
 
-        vec4 rands = hash43(vec3(uv * 5., 0.));
+        vec4 rands = hash43(vec3(uv * 10., 0.));
 
-        position.xyz += curl(vec3(position.xy, rands.x), time, 0.1) * 0.01;
+        position.xyz += curl(vec3(position.xy, rands.x), uTime, 0.1) * 0.001 * smoothstep(0.3, 0.9, rands.z);
 
         gl_FragColor = vec4(position + velocity * 0., 1.);
 
