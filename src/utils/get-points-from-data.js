@@ -7,7 +7,7 @@ export function getPointsFromData(imageData) {
         // minDistance: 1.1,
         minDistance: 4 / 400,
         // maxDistance: 55,
-        maxDistance: 45 / 400,
+        maxDistance: 10 / 400,
         // tries: 15,
         tries: 4,
         distanceFunction: function (point) {
