@@ -100,13 +100,13 @@ export function TargetWrapper({ targets, count, ...otherProps }) {
     }, [count, points]);
 
     const target2 = useMemo(() => {
-        if (points.length === 0) return null;
+        if (points2.length === 0) return null;
 
         const t = createDataTexture(count, count);
         fillPositionTextureFromPoints(t, points2);
 
         return t;
-    }, [count, points]);
+    }, [count, points2]);
 
     let modulo = 0;
     const handleClick = (e) => {
