@@ -15,7 +15,7 @@ export function Scratchpad({imageUrl, width = 32, height = 32, name}) {
         const canvas = canvasRef.current;
         if (canvas === null) return;
         
-        const ctx = canvas.getContext('2d');
+        const ctx = canvas.getContext('2d', { willReadFrequently: true });
         if (ctx === null) return;
         
         canvas.width = width;
@@ -35,7 +35,7 @@ export function Scratchpad({imageUrl, width = 32, height = 32, name}) {
             width,
             height
         });
-    }, [canvasRef, imageRef])
+    }, [canvasRef, dispatch, height, imageRef, name, width])
 
     return (
         <>
