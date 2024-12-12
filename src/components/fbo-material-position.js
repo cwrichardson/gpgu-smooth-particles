@@ -29,6 +29,7 @@ export function FboPositionMaterial(props) {
     if (! Array.isArray(points) || points.length === 0) {
         fillPositionTexture(dtPosition);
     } else {
+        console.log('filling texture from points', points);
         fillPositionTextureFromPoints(dtPosition, points);
     }
 
@@ -36,6 +37,7 @@ export function FboPositionMaterial(props) {
         fillPositionTexture(dtPosition1);
         fillPositionTexture(target2);
     } else {
+        console.log('filling texture from points', points2);
         fillPositionTextureFromPoints(dtPosition1, points2);
         fillPositionTextureFromPoints(target2, points2);
     }

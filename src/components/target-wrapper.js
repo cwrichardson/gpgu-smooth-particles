@@ -24,17 +24,19 @@ import { fillPositionTextureFromPoints } from '@/utils/fill-position-texture';
  * @param {number} param0.count the size of one axis of the square
  * 
  */
-export function TargetWrapper({ targets, count, ...otherProps }) {
-    const length = count**2;
+export function TargetWrapper({ targets, width, height, ...otherProps }) {
+    const length = width * height;
 
     const posRef = useRef();
     const velRef = useRef();
     const mainRef = useRef();
 
     const fboCamera = useMemo(() => {
-        const camera = new OrthographicCamera(-1, 1, 1, -1, 1, 0, 1);
+        // dividing by 4 instead of 2, because scratchpads are 1/2 the size of the final
+        // model
+        const camera = new OrthographicCamera(-width/4, width/4, height/4, -height/4, 0, 1);
         return camera;
-    }, []);
+    }, [height, width]);
 
     const PosScene = useMemo(() => {
         const scene = new Scene();
@@ -65,27 +67,41 @@ export function TargetWrapper({ targets, count, ...otherProps }) {
              * But it's replaced by Math.trunc() like a decade ago
              * (ECMAScript 6).
              */
-            reference.push((i % count) / count, Math.trunc( i / count ) / count);
+            reference.push((i % width) / width, Math.trunc( i / width ) / height);
         }
 
         return [
             new Float32Array(positions),
             new Float32Array(reference)
         ];
-    }, [count, length]);
+    }, [height, length, width]);
 
     const scratchpads = useScratchpads();
     const [ points, setPoints ] = useState([]);
     const [ points2, setPoints2 ] = useState([]);
 
+    /**
+     * The data object returned from the scratchpads context is
+     * an `ImageData` `data` property, which is a one-dimensional
+     * Uint8ClampedArray in RGBA order, where each set of 4 entries
+     * represents a pixel in the original image, going in rows
+     * from top left to bottom right.
+     * 
+     * @see https://developer.mozilla.org/en-US/docs/Web/API/ImageData
+     * 
+     * The returned points is an array of 3-dimensional arrays
+     * (e.g., [[a, b, c], [d, e, f], ...]) where a and b are the x,y
+     * coordinates of the sampled image from upper left to lower right,
+     * and c is the red color from 0-1 of that pixel.
+     */
     useEffect(() => {
-        if (scratchpads['circle']) {
-            const points = getPointsFromData(scratchpads['circle'].data);
+        if (scratchpads['sp1']) {
+            const points = getPointsFromData(scratchpads['sp1'].data);
             setPoints(points);
         }
 
-        if (scratchpads['yinyang']) {
-            const points2 = getPointsFromData(scratchpads['yinyang'].data);
+        if (scratchpads['sp2']) {
+            const points2 = getPointsFromData(scratchpads['sp2'].data);
             setPoints2(points2);
         }
     }, [scratchpads]);
@@ -93,20 +109,20 @@ export function TargetWrapper({ targets, count, ...otherProps }) {
     const target1 = useMemo(() => {
         if (points.length === 0) return null;
 
-        const t = createDataTexture(count, count);
+        const t = createDataTexture(width, height);
         fillPositionTextureFromPoints(t, points);
 
         return t;
-    }, [count, points]);
+    }, [width, height, points]);
 
     const target2 = useMemo(() => {
         if (points2.length === 0) return null;
 
-        const t = createDataTexture(count, count);
+        const t = createDataTexture(width, height);
         fillPositionTextureFromPoints(t, points2);
 
         return t;
-    }, [count, points2]);
+    }, [width, height, points2]);
 
     let modulo = 0;
     const handleClick = (e) => {
@@ -141,6 +157,14 @@ export function TargetWrapper({ targets, count, ...otherProps }) {
         state.gl.setRenderTarget(null);
         
         // update main positions
+        /**
+         * The uPositions is mapped as `pos = texture2D(uPositions, reference)`
+         * in the vertex shader. That is, for each `reference` coordnate (from
+         * the original [ positions, reference ]), that texel is sampled from
+         * the new `uPositions`, and becomes a position. So, (r, g, b, a) at
+         * coord [x,y] in `uPositions` becomes `vec4(x, y, z, w)` in the main
+         * material.
+         */
         mainRef.current.material.uPositions = targets.posTarget[currentTextureIndex].texture;
         
         // pass the positions
@@ -162,8 +186,8 @@ export function TargetWrapper({ targets, count, ...otherProps }) {
             {createPortal(
                 <mesh ref={posRef}>
                     <FboPositionMaterial
-                        sizeX={count}
-                        sizeY={count}
+                        sizeX={width}
+                        sizeY={height}
                         points={points}
                         points2={points2}
                     />
@@ -188,8 +212,8 @@ export function TargetWrapper({ targets, count, ...otherProps }) {
             {createPortal(
                 <mesh ref={velRef}>
                     <FboVelocityMaterial
-                        sizeX={count}
-                        sizeY={count}
+                        sizeX={width}
+                        sizeY={height}
                         points={points}
                         uTarget={target1}
                     />

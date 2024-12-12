@@ -15,7 +15,7 @@ export function Model(props) {
     return (
         <View orbit {...props}>
             <Suspense fallback={null}>
-                <FboScene count={32} />
+                <FboScene width={128} height={64} />
             </Suspense>
         </View>
     )

@@ -59,8 +59,8 @@ export function Scene(props) {
                     <Preload all />
                 </Canvas>
             </ErrorBoundary>
-            <Scratchpad imageUrl={'/ana.jpg'} name={'circle'} width={32} height={32} />
-            <Scratchpad imageUrl={'/yin_yang.png'} name={'yinyang'} width={32} height={32} />
+            <Scratchpad imageUrl={'/bird.jpg'} name={'sp1'} width={128} height={64} />
+            <Scratchpad imageUrl={'/yin_yang.png'} name={'sp2'} width={128} height={64} />
         </ScratchpadProvider>
     )
 }

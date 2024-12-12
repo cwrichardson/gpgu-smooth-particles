@@ -14,12 +14,12 @@ import { TargetWrapper } from '@/components/target-wrapper';
  *      is this squared)
  */
 export function FboScene(props) {
-    const { count = 32, ...restProps } = props;
+    const { height = 32, width = 32, ...restProps } = props;
 
     const posTarget = [];
     const velTarget = [];
 
-    posTarget[0] = useFBO(count, count, {
+    posTarget[0] = useFBO(width, height, {
         minFilter: NearestFilter,
         magFilter: NearestFilter,
         format: RGBAFormat,
@@ -28,7 +28,7 @@ export function FboScene(props) {
         wrapT: RepeatWrapping
     });
 
-    posTarget[1] = useFBO(count, count, {
+    posTarget[1] = useFBO(width, height, {
         minFilter: NearestFilter,
         magFilter: NearestFilter,
         format: RGBAFormat,
@@ -37,7 +37,7 @@ export function FboScene(props) {
         wrapT: RepeatWrapping
     });
 
-    velTarget[0] = useFBO(count, count, {
+    velTarget[0] = useFBO(width, height, {
         minFilter: NearestFilter,
         magFilter: NearestFilter,
         format: RGBAFormat,
@@ -46,7 +46,7 @@ export function FboScene(props) {
         wrapT: RepeatWrapping
     });
 
-    velTarget[1] = useFBO(count, count, {
+    velTarget[1] = useFBO(width, height, {
         minFilter: NearestFilter,
         magFilter: NearestFilter,
         format: RGBAFormat,
@@ -57,7 +57,8 @@ export function FboScene(props) {
 
     return (<TargetWrapper
         targets={{ posTarget, velTarget }}
-        count={count}
+        width={width}
+        height={height}
         {...restProps} 
     />)
 }
