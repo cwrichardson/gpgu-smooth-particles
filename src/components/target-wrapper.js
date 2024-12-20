@@ -6,9 +6,11 @@ import { OrthographicCamera, Scene } from 'three';
 
 import { Points } from './points';
 import { FboPositionMaterial } from './fbo-material-position';
+import { FboVelocityMaterial } from './fbo-material-velocity';
 
 export function TargetWrapper({ targets, count, ...otherProps }) {
     const posRef = useRef();
+    const velRef = useRef();
     const mainRef = useRef();
 
     const fboCamera = useMemo(() => {
@@ -17,6 +19,11 @@ export function TargetWrapper({ targets, count, ...otherProps }) {
     }, []);
 
     const PosScene = useMemo(() => {
+        const scene = new Scene();
+        return scene;
+    }, []);
+
+    const VelScene = useMemo(() => {
         const scene = new Scene();
         return scene;
     }, []);
@@ -41,16 +48,18 @@ export function TargetWrapper({ targets, count, ...otherProps }) {
 
     const gl = useThree((state) => state.gl);
     useEffect(() => {
-        if (!(posRef.current)) return;
+        if (!(posRef.current || velRef.current)) return;
 
         const rts = [0, 1];
         rts.forEach((i) => {
             gl.setRenderTarget(targets.posTarget[i]);
             gl.render(PosScene, fboCamera);
+            gl.setRenderTarget(targets.velTarget[i]);
+            gl.render(VelScene, fboCamera);
 
             gl.setRenderTarget(null);
         })
-    }, [PosScene, fboCamera, gl, posRef, targets])
+    }, [PosScene, VelScene, fboCamera, gl, posRef, targets])
 
     let currentTextureIndex = 0;
     let nextTextureIndex;
@@ -60,10 +69,13 @@ export function TargetWrapper({ targets, count, ...otherProps }) {
 
         // update position and velocity for next frame
         posRef.current.material.dtPosition = targets.posTarget[currentTextureIndex].texture;
+        // posRef.current.material.dtVelocity = targets.velTarget[currentTextureIndex].texture;
 
         // do the GPGPU position calculations
         state.gl.setRenderTarget(targets.posTarget[nextTextureIndex]);
         state.gl.render(PosScene, fboCamera);
+        state.gl.setRenderTarget(targets.velTarget[nextTextureIndex]);
+        state.gl.render(VelScene, fboCamera);
         
         // return rendering to the main target
         state.gl.setRenderTarget(null);
@@ -105,6 +117,36 @@ export function TargetWrapper({ targets, count, ...otherProps }) {
                     </bufferGeometry>
                 </mesh>
             , PosScene
+            )}
+            {/* Calculate velocity texture in FBO */}
+            {createPortal(
+                <mesh ref={velRef}>
+                    <FboVelocityMaterial
+                        size={count}
+                        initPoints={positions}
+                    />
+                    <bufferGeometry>
+                        <bufferAttribute
+                            attach={'attributes-position'}
+                            count={6}
+                            array={new Float32Array([
+                                -1,-1,0,  1,-1,0,  1,1,0,
+                                -1,-1, 0, 1, 1, 0, -1,1,0
+                            ])}
+                            itemSize={3}
+                        />
+                        <bufferAttribute
+                            attach={'attributes-uv'}
+                            count={6}
+                            array={new Float32Array([
+                                0,1, 1,1, 1,0,
+                                0,1, 1,0, 0,0
+                            ])}
+                            itemSize={2}
+                        />
+                    </bufferGeometry>
+                </mesh>
+            , VelScene
             )}
             {/* The results of which are forwarded into the output display */}
             <Points

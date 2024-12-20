@@ -17,6 +17,7 @@ export function FboScene(props) {
     const { count = 32, ...restProps } = props;
 
     const posTarget = [];
+    const velTarget = [];
 
     const fboOptions = {
         minFilter: NearestFilter,
@@ -29,9 +30,11 @@ export function FboScene(props) {
 
     posTarget[0] = useFBO(count, count, fboOptions);
     posTarget[1] = useFBO(count, count, fboOptions);
+    velTarget[0] = useFBO(count, count, fboOptions);
+    velTarget[1] = useFBO(count, count, fboOptions);
 
     return (<TargetWrapper
-        targets={{ posTarget }}
+        targets={{ posTarget, velTarget }}
         count={count}
         {...restProps} 
     />)

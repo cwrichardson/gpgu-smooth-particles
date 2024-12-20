@@ -4,31 +4,31 @@ import { extend } from '@react-three/fiber';
 import { createDataTexture } from '@/utils/create-data-texture';
 import { fillDataTextureFromPoints } from '@/utils/fill-data-texture';
 import { fboPassthroughVertex } from '@/glsl/fboPassthroughVertex';
-import { fragmentShaderPosition } from '@/glsl/fragmentShaderPosition';
+import { fragmentShaderVelocity } from '@/glsl/fragmentShaderVelocity';
 
-const PositionMaterial = shaderMaterial({
+const VelocityMaterial = shaderMaterial({
     dtPosition: null,
-    dtVelocity: null,
-}, fboPassthroughVertex, fragmentShaderPosition);
-extend({ PositionMaterial });
+    uDestination: null
+}, fboPassthroughVertex, fragmentShaderVelocity);
+extend({ VelocityMaterial });
 
 /**
  * Extend shader material with custom uniforms
  */
-export function FboPositionMaterial(props) {
+export function FboVelocityMaterial(props) {
     const {size, initPoints, ...rest} = props;
     const dtPosition = createDataTexture(size, size);
-    const dtVelocity = createDataTexture(size, size);
+    const uDestination = createDataTexture(size, size);
 
     // create initial state
     fillDataTextureFromPoints(dtPosition, initPoints);
-    // leave velocity filled with 0s    
+    fillDataTextureFromPoints(uDestination, initPoints);
 
     return (
-        <positionMaterial
-            key={PositionMaterial.key}
+        <velocityMaterial
+            key={VelocityMaterial.key}
             dtPosition={dtPosition}
-            dtVelocity={dtVelocity}
+            uDestination={uDestination}
             depthTest={false}
             {...rest}
         />
