@@ -2,9 +2,9 @@ export function fillPositionTexture(dataTexture) {
     const theArray = dataTexture.image.data;
 
     for (let k = 0, kl = theArray.length; k < kl; k += 4) {
-        theArray[k + 0] = 2 * (Math.random() - 0.5);
-        theArray[k + 1] = 2 * (Math.random() - 0.5);
-        theArray[k + 2] = 0;
+        theArray[k + 0] = 0;
+        theArray[k + 1] = 0;
+        theArray[k + 2] = 1;
         theArray[k + 3] = 1;
     }
 }
@@ -29,59 +29,67 @@ export function fillPositionTextureFromPoints(dataTexture, points) {
      * We need to map this.
      */
 
-    let ptIdx = 0;
-    let ptX, ptY;
-    let oldPtX, oldPtY;
-
-    // loop y from bottom left to top right of theArray
-    for (let y = 0; y < texHeight; y++) {
-        for (let x = 0; x < texWidth; x++) {
-            const invY = (texHeight - 1) - y;
-            const texIdx = ((invY * texWidth) + x) * 4;
-
-            // if we're out of points, just keep filling with 0s
-            if (ptIdx === null) {
-                theArray[texIdx + 0] = 0;
-                theArray[texIdx + 1] = 0;
-                theArray[texIdx + 2] = 0;
-                theArray[texIdx + 3] = 0;
-                continue;
-            }
-
-            ptX = Math.floor(points[ptIdx][0]);
-            ptY = Math.floor(points[ptIdx][1]);
-            
-            // skip duplicates
-            if (oldPtX) {
-                while(ptX === oldPtX && ptY === oldPtY && ptIdx < points.length) {
-                    ptIdx++;
-                    ptX = Math.floor(points[ptIdx][0]);
-                    ptY = Math.floor(points[ptIdx][1]);
-                }
-            }
-            
-            // if the points match the index, we need to put it in theArray,
-            // but invert the y.
-            if (ptY === y && ptX === x) {
-                theArray[texIdx + 0] = (ptX / texWidth);
-                theArray[texIdx + 1] = (ptY / texHeight);
-                theArray[texIdx + 2] = 0;
-                theArray[texIdx + 3] = points[ptIdx][2];
-
-                // still have points?
-                (ptIdx < (points.length - 1)) ? ptIdx++ : ptIdx = null;
-
-                oldPtX = ptX;
-                oldPtY = ptY;
-            // otherwise fill with 0s
-            } else {
-                theArray[texIdx + 0] = 0;
-                theArray[texIdx + 1] = 0;
-                theArray[texIdx + 2] = 0;
-                theArray[texIdx + 3] = 0;
-            }
-        }
+    for (let k = 0, kl = points.length; k < kl; k++) {
+        const texIdx = k * 4;
+        theArray[texIdx + 0] = (points[k][0] / texWidth);
+        theArray[texIdx + 1] = (points[k][1] / texHeight);
+        theArray[texIdx + 2] = 0;
+        theArray[texIdx + 3] = points[k][2];
     }
+
+    // let ptIdx = 0;
+    // let ptX, ptY;
+    // let oldPtX, oldPtY;
+
+    // // loop y from bottom left to top right of theArray
+    // for (let y = 0; y < texHeight; y++) {
+    //     for (let x = 0; x < texWidth; x++) {
+    //         const invY = (texHeight - 1) - y;
+    //         const texIdx = ((invY * texWidth) + x) * 4;
+
+    //         // if we're out of points, just keep filling with 0s
+    //         if (ptIdx === null) {
+    //             theArray[texIdx + 0] = 0;
+    //             theArray[texIdx + 1] = 0;
+    //             theArray[texIdx + 2] = 0;
+    //             theArray[texIdx + 3] = 0;
+    //             continue;
+    //         }
+
+    //         ptX = Math.floor(points[ptIdx][0]);
+    //         ptY = Math.floor(points[ptIdx][1]);
+            
+    //         // skip duplicates
+    //         if (oldPtX) {
+    //             while(ptX === oldPtX && ptY === oldPtY && ptIdx < points.length) {
+    //                 ptIdx++;
+    //                 ptX = Math.floor(points[ptIdx][0]);
+    //                 ptY = Math.floor(points[ptIdx][1]);
+    //             }
+    //         }
+            
+    //         // if the points match the index, we need to put it in theArray,
+    //         // but invert the y.
+    //         if (ptY === y && ptX === x) {
+    //             theArray[texIdx + 0] = (ptX / texWidth);
+    //             theArray[texIdx + 1] = (ptY / texHeight);
+    //             theArray[texIdx + 2] = 0;
+    //             theArray[texIdx + 3] = points[ptIdx][2];
+
+    //             // still have points?
+    //             (ptIdx < (points.length - 1)) ? ptIdx++ : ptIdx = null;
+
+    //             oldPtX = ptX;
+    //             oldPtY = ptY;
+    //         // otherwise fill with 0s
+    //         } else {
+    //             theArray[texIdx + 0] = 0;
+    //             theArray[texIdx + 1] = 0;
+    //             theArray[texIdx + 2] = 0;
+    //             theArray[texIdx + 3] = 0;
+    //         }
+    //     }
+    // }
     
     // for (let k = 0, kl = theArray.length; k < kl; k += 4) {
     //     const pointIdx = k / 4;

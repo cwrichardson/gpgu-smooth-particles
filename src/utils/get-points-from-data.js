@@ -58,6 +58,7 @@ export function getPointsFromData(imageData) {
 
         return [ point[0], point[1], redColor];
     })
+    console.log('points', points)
 
     return points;
 

@@ -1,8 +1,10 @@
 export const fragment = /* glsl */ `
+    varying float vBigBlue;
     varying float vShade;
     varying vec2 vUv;
 
     void main() {
+        if (vBigBlue >= 0.10) discard;
         // color of not-quite black
         vec3 color = vec3(0.2);
 

@@ -2,12 +2,14 @@ export const vertex = /* glsl */ `
     uniform sampler2D uPositions;
     uniform float uTime;
     attribute vec2 reference;
+    varying float vBigBlue;
     varying float vShade;
     varying vec2 vUv;
 
     void main() {
         vUv = uv;
         vec3 pos = texture2D(uPositions, reference).xyz;
+        vBigBlue = pos.z;
 
         pos -= vec3(0.5, 0.5, 0.);
         float x = pos.x;
@@ -20,8 +22,12 @@ export const vertex = /* glsl */ `
         // vec4 mvPosition = modelViewMatrix * vec4( position, 1. );
         // vec4 mvPosition = modelViewMatrix * vec4( reference, 1., 1. );
         vec4 mvPosition = modelViewMatrix * vec4( pos, 1. );
+
+        float fadeIn = 1. - smoothstep(0.90, 1., vBigBlue);
+        // float fadeIn = 1.;
+
         // start with big particles; give them some perspective
-        gl_PointSize = 100. * ( 1. / - mvPosition.z );
+        gl_PointSize = 100. * ( 1. / - mvPosition.z ) * fadeIn;
         gl_Position = projectionMatrix * mvPosition;
     }
 `;
