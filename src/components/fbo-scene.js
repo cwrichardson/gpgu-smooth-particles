@@ -17,46 +17,21 @@ export function FboScene(props) {
     const { count = 32, ...restProps } = props;
 
     const posTarget = [];
-    const velTarget = [];
 
-    posTarget[0] = useFBO(count, count, {
+    const fboOptions = {
         minFilter: NearestFilter,
         magFilter: NearestFilter,
         format: RGBAFormat,
         type: FloatType,
         wrapS: RepeatWrapping,
         wrapT: RepeatWrapping
-    });
+    }
 
-    posTarget[1] = useFBO(count, count, {
-        minFilter: NearestFilter,
-        magFilter: NearestFilter,
-        format: RGBAFormat,
-        type: FloatType,
-        wrapS: RepeatWrapping,
-        wrapT: RepeatWrapping
-    });
-
-    velTarget[0] = useFBO(count, count, {
-        minFilter: NearestFilter,
-        magFilter: NearestFilter,
-        format: RGBAFormat,
-        type: FloatType,
-        wrapS: RepeatWrapping,
-        wrapT: RepeatWrapping
-    });
-
-    velTarget[1] = useFBO(count, count, {
-        minFilter: NearestFilter,
-        magFilter: NearestFilter,
-        format: RGBAFormat,
-        type: FloatType,
-        wrapS: RepeatWrapping,
-        wrapT: RepeatWrapping
-    });
+    posTarget[0] = useFBO(count, count, fboOptions);
+    posTarget[1] = useFBO(count, count, fboOptions);
 
     return (<TargetWrapper
-        targets={{ posTarget, velTarget }}
+        targets={{ posTarget }}
         count={count}
         {...restProps} 
     />)

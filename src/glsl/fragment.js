@@ -1,22 +1,20 @@
 export const fragment = /* glsl */ `
-    varying float vShade;
     varying vec2 vUv;
 
     void main() {
-        // color of not-quite black
+        float opacity = 1.0;
+        float d = distance(gl_PointCoord, vec2(0.5, 0.5));
         vec3 color = vec3(0.2);
+        opacity = 1. - d * 2.;
 
-        // get distance (0 – 0.5), and 2x to get 0–1
-        // float d = length(gl_PointCoord.xy - 0.5) * 2.0;
-        // but then invert it and call it alpha
-        float alpha = 1. - length(gl_PointCoord.xy - 0.5) * 2.0;
+        gl_FragColor = vec4(color, opacity);
 
-        // add a few alphas together to make a combined gradient for the point
-        float finalAlpha = alpha * 0.05 + smoothstep(0., 1., alpha) * 0.1
-            + smoothstep(0.9 - fwidth(alpha), 0.9, alpha) * 0.5;
+        // #include tonemapping_fragment
+        #if defined( TONE_MAPPING )
+            gl_FragColor.rgb = toneMapping( gl_FragColor.rgb );
+        #endif
 
-        float opac = 1. - (0.3 + 0.7 * vShade);
-
-        gl_FragColor = vec4(color, finalAlpha * opac);
+        // #include colorspace_fragment
+        gl_FragColor = linearToOutputTexel( gl_FragColor );
     }
 `;

@@ -7,8 +7,6 @@ import { Preload } from '@react-three/drei';
 import { css } from 'styled-system/css';
 import { splitCssProps } from 'styled-system/jsx';
 import { r3f } from '@/utils/r3f';
-import { ScratchpadProvider } from '@/utils/scratch-pad-context';
-import { Scratchpad } from '@/components/scratch-pad';
 
 const fallbackRenderer = ({ error }) => {
     console.error('Error rendering animation canvas', error.message);
@@ -48,19 +46,15 @@ export function Scene(props) {
     };
 
     return (
-        <ScratchpadProvider>
-            <ErrorBoundary fallbackRender={fallbackRenderer}>
-                <Canvas
-                    className={classes}
-                    style={styleReset}
-                    {...canvasProps}
-                >
-                    <r3f.Out />
-                    <Preload all />
-                </Canvas>
-            </ErrorBoundary>
-            <Scratchpad imageUrl={'/ana.jpg'} name={'circle'} width={32} height={32} />
-            <Scratchpad imageUrl={'/yin_yang.png'} name={'yinyang'} width={32} height={32} />
-        </ScratchpadProvider>
+        <ErrorBoundary fallbackRender={fallbackRenderer}>
+            <Canvas
+                className={classes}
+                style={styleReset}
+                {...canvasProps}
+            >
+                <r3f.Out />
+                <Preload all />
+            </Canvas>
+        </ErrorBoundary>
     )
 }
